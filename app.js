@@ -32,7 +32,7 @@ app.use(
     cookie: {
       expires: 1000 * 60 * 60 * 60,
     },
-    store: new LowdbStore(db.get('session'))
+    //store: new LowdbStore(db.get('session'))
   })
 );
 
