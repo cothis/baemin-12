@@ -1,4 +1,4 @@
-import { debouncer, validator } from './common.js'
+import { debouncer, validator } from './common.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   let isDuplicated = true;
@@ -8,12 +8,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const debouncedValidator = debouncer(checkValid, 250);
   const debouncedCheckAll = debouncer(() => {
     const $next = document.querySelector('#next');
-    if(checkAll()) {
+    if (checkAll()) {
       $next.removeAttribute('disabled');
     } else {
       $next.setAttribute('disabled', 'disabled');
     }
-  }, 300)
+  }, 300);
 
   /* mail */
   const $mail = document.querySelector('#mail');
@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     return isDuplicated;
   }, false, '중복 확인을 해주세요', $mail);
+
 
   const checkDuplicateMail = async () => {
     const response = await fetch(`/join/hasDuplicate?mail=${$mail.value}`);
@@ -42,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
       $message.style.display = 'block';
       $check.style.color = 'var(--dark-grey)';
     });
+    debouncedCheckAll();
   }
 
   /* nickname */
@@ -50,15 +52,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* password */
   const $password = document.querySelector('#password');
-  addValidate(/\w.{8}/, true, '비밀번호는 8글자 이상 입력해주세요', $password)
+  addValidate(/\w.{8}/, true, '비밀번호는 8글자 이상 입력해주세요', $password);
   addValidate(/(?=.*\d)(?=.*[a-z])/, true, '비밀번호는 영어 소문자, 숫자를 포함해주세요', $password);
 
   /* birthday */
   const checkMonthAndDay = ($birthday) => {
-    const [ _, month, day ] = ($birthday.value.split('.').map(Number));
-    // 2월 31일 같은 문제가 발생할 수 있음. 
-    return (month >= 1 && month <= 12) && (day >= 1 || day <= 31);
-  }
+    const [_, month, day] = $birthday.value.split('.').map(Number);
+    // 2월 31일 같은 문제가 발생할 수 있음.
+    return (month >= 1 && month <= 12) && (day >= 1 && day <= 31);
+  };
   const $birthday = document.querySelector('#birthday');
   addValidate(/^\d{4}[.]\d{2}[.]\d{2}$/, true, '2021.07.05 형식으로 입력해주세요', $birthday);
   addValidate(() => checkMonthAndDay($birthday), true, '날짜 형식이 잘못되었습니다.', $birthday);
@@ -68,8 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
   $mail.addEventListener('input', (e) => {
     isDuplicated = true;
     $userinfo.style.display = 'none';
-  })
-    
+  });
+  
   $joinForm.addEventListener('input', (e) => {
     const $remove = e.target.closest('.input-field').querySelector('.fa-times-circle');
     const $message = e.target.closest('.input-wrapper').querySelector('.error-msg');
@@ -84,13 +86,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const validHandler = () => {
       $message.style.display = '';
       $check.style.color = 'var(--primary)';
-    }
+    };
 
     const invalidHandler = (message) => {
       $message.textContent = message;
       $message.style.display = 'block';
       $check.style.color = 'var(--dark-grey)';
-    }
+    };
 
     debouncedValidator(e, validHandler, invalidHandler);
     debouncedCheckAll();
@@ -109,20 +111,20 @@ document.addEventListener('DOMContentLoaded', () => {
   $joinForm.addEventListener('focusin', (e) => {
     const $inputField = e.target.closest('.input-field');
     if (!$inputField) return;
-    const $remove = $inputField.querySelector('button > i')
-    if($remove) {
-      $remove.style.display = 'block'
+    const $remove = $inputField.querySelector('button > i');
+    if ($remove) {
+      $remove.style.display = 'block';
     }
-  })
+  });
 
   $joinForm.addEventListener('focusout', (e) => {
     const $inputField = e.target.closest('.input-field');
     if (!$inputField) return;
-    const $remove = $inputField.querySelector('button > i')
-    if($remove) {
+    const $remove = $inputField.querySelector('button > i');
+    if ($remove) {
       $remove.style.display = '';
     }
-  })
+  });
 
   $checkDuplicateButton.addEventListener('click', checkDuplicateMail);
 });

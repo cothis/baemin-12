@@ -34,8 +34,8 @@
     cursor: pointer;
 }
 
-.invalid-message {
-    font-size: 16px;
+#re-request {
+    display: none;
 }
 
 #request-number {

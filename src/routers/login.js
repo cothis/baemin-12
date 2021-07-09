@@ -8,10 +8,11 @@ loginRouter.get('/login', async (req, res) => {
     const { userId } = req.session;
     if (userId) {
       res.redirect('/');
+      return;
     }
     res.render('login', { title: '로그인' });
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 });
 
@@ -34,7 +35,23 @@ loginRouter.post('/login', async (req, res) => {
       }
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
+  }
+});
+
+loginRouter.get('/logout', async (req, res) => {
+  try {
+    await req.session.destroy(function(err) {
+      if(err) {
+          return next(err);
+      } else {
+          req.session = null;
+          console.log("logout successful");
+          return res.redirect('/');
+      }
+    });
+  } catch (error) {
+    console.error(error);
   }
 });
 
