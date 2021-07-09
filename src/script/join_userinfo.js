@@ -3,6 +3,7 @@ import { debouncer, validator } from './common.js';
 document.addEventListener('DOMContentLoaded', () => {
   let isDuplicated = true;
   const $checkDuplicateButton = document.querySelector('#check-duplicate-button');
+  const $userinfo = document.querySelector('.userinfo');
   const { addValidate, checkValid, checkAll } = validator();
   const debouncedValidator = debouncer(checkValid, 250);
   const debouncedCheckAll = debouncer(() => {
@@ -17,19 +18,15 @@ document.addEventListener('DOMContentLoaded', () => {
   /* mail */
   const $mail = document.querySelector('#mail');
   addValidate(/[\w._%+-]+@[\w.-]+[.][a-z]{2,}$/, true, '메일 형식을 지켜주세요.', $mail);
-  addValidate(
-    () => {
-      if (isDuplicated) {
-        $checkDuplicateButton.style.color = 'var(--black)';
-      } else {
-        $checkDuplicateButton.style.color = 'var(--dark-grey)';
-      }
-      return isDuplicated;
-    },
-    false,
-    '중복 확인을 해주세요',
-    $mail
-  );
+  addValidate(() => {
+    if (isDuplicated) {
+      $checkDuplicateButton.style.color = 'var(--black)';
+    } else {
+      $checkDuplicateButton.style.color = 'var(--dark-grey)';
+    }
+    return isDuplicated;
+  }, false, '중복 확인을 해주세요', $mail);
+
 
   const checkDuplicateMail = async () => {
     const response = await fetch(`/join/hasDuplicate?mail=${$mail.value}`);
@@ -37,16 +34,17 @@ document.addEventListener('DOMContentLoaded', () => {
     isDuplicated = result;
     const $message = document.querySelector('.input__mail + .error-msg');
     const $check = document.querySelector('.input__mail .fa-check');
-    if (!isDuplicated) {
+    checkValid($mail, () => {
       $message.style.display = '';
       $check.style.color = 'var(--primary)';
-    } else {
-      $message.textContent = '중복된 이름입니다.';
+      $userinfo.style.display = 'flex';
+    }, (message) => {
+      $message.textContent = message;
       $message.style.display = 'block';
       $check.style.color = 'var(--dark-grey)';
-    }
+    });
     debouncedCheckAll();
-  };
+  }
 
   /* nickname */
   const $nickname = document.querySelector('#nickname');
@@ -71,8 +69,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   $mail.addEventListener('input', (e) => {
     isDuplicated = true;
+    $userinfo.style.display = 'none';
   });
-
+  
   $joinForm.addEventListener('input', (e) => {
     const $remove = e.target.closest('.input-field').querySelector('.fa-times-circle');
     const $message = e.target.closest('.input-wrapper').querySelector('.error-msg');
@@ -105,6 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
       $button.parentElement.previousElementSibling.value = '';
       e.target.closest('.input-wrapper').querySelector('.error-msg').style.display = '';
       e.target.closest('.input-wrapper').querySelector('.fa-check').style.color = 'var(--dark-grey)';
+      $userinfo.style.display = 'none';
     }
   });
 
