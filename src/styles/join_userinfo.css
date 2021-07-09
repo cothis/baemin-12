@@ -2,6 +2,11 @@
   padding: 0;
 }
 
+.userinfo {
+  display: none;
+  flex-direction: column;
+}
+
 .input__mail {
   --gap: 16px;
   --button-size: 90px;

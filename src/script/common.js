@@ -21,7 +21,12 @@ const validator = () => {
     map.get($target).valids.push({ regExp, match, message });
   };
   const checkValid = (e, validHandler, invalidHandler) => {
-    const $input = e.target.closest('.input-field > input');
+    let $input = null;
+    if (e instanceof Event) {
+      $input = e.target.closest('.input-field > input');
+    } else  {
+      $input = e;
+    }
     if (!map.has($input)) {
       validHandler();
       return;
